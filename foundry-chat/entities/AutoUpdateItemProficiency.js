@@ -1,3 +1,4 @@
+// original poster: @Kandashi#6698
 /// running this on world launch/refresh will auto update items that are added to the PC's sheets to reflect their proficiencies. If it cannot determine proficiency it will notify you to adjust manually.
 Hooks.on("createOwnedItem", (actor, item ,sheet, id) =>{
     let itemName = item.name;
