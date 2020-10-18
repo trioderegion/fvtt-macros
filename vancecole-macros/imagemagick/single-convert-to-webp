@@ -1,1 +1,0 @@
-magick convert myImage.png -strip -quality 60 myImage.webp
