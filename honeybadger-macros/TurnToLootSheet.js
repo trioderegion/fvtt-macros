@@ -84,7 +84,7 @@ for (let token of canvas.tokens.controlled) {
   let permissions = {};
   Object.assign(permissions, token.actor.data.permission);
   lootingUsers.forEach(user => {
-    permissions[user.data._id] = 3;
+    permissions[user.data._id] = 2;
   });
   //console.log('Permissions:', permissions);
   await token.update({
@@ -93,7 +93,7 @@ for (let token of canvas.tokens.controlled) {
       "actor": {
         "flags": {
           "loot": {
-            "playersPermission": 3
+            "playersPermission": 2
           }
         }
       },
