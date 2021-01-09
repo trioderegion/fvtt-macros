@@ -4,6 +4,7 @@
  */
 async function TurnSelectedToLoot(){
   // For each selected token.
+
   for (let token of canvas.tokens.controlled) {
     /////
     // Allowlist of token's actor types we're allowed to work on.
@@ -39,7 +40,6 @@ async function TurnSelectedToLoot(){
       "items": newItems
     });
 
-
     /////
     // Change sheet to lootable, and give players permissions.
     //console.log('Flags before: '); console.log(token.actor.data.flags);
@@ -59,20 +59,14 @@ async function TurnSelectedToLoot(){
       || token.actor.data.data.currency.cp == 0 // should be an object, not a number
     ) {
       newActorData['data.currency'] = {
-        'cp': {'value': null},
-        'ep': {'value': null},
-        'gp': {'value': null},
-        'pp': {'value': null},
-        'sp': {'value': null}
+        'cp': {'value': 0},
+        'ep': {'value': 0},
+        'gp': {'value': 0},
+        'pp': {'value': 0},
+        'sp': {'value': 0}
       };
     }
-    await token.actor.update(newActorData);
-    //console.log('Flags after: '); console.log(token.actor.data.flags);
-    //console.log('Currency after:', token.actor.data.data.currency);
 
-    /////
-    // Update permissions so users can loot stuff by themselves.
-    
     /** optional blocklist */
     //let user_blocklist = ['HoneyBadger'];
     let user_blocklist=[];
@@ -80,6 +74,36 @@ async function TurnSelectedToLoot(){
     // Players and Trusted Players (no guests or GMs).  NEVER include the GM!
       .filter(user => {return user.role >= 1 && user.role <= 2});
     //console.log('Looting users:', lootingUsers);
+
+
+    /** find if the actor has any gold already on its person */
+    let currencyArray = [];
+    for (const currency in newActorData){
+      currencyArray.push(newActorData[currency].value);
+    }
+    //const hasGold = Math.max.apply(Math.max,currencyArray) > 0;
+    const hasGold = Math.max(...currencyArray) > 0;
+
+    /** if the actor has no gold, assign gold by CR (custom gold scaling equation LOOSELY in line with DMG tables */
+    if (!hasGold){
+      const exponent = 0.15 * (getProperty(token.actor, "data.data.details.cr") ?? 0);
+
+      let gold = Math.round(0.6 * 10 * (10 ** exponent));
+
+      /** ensure it can devide evenly across all looting players (convienence) */
+      gold = gold + (gold % Math.max(lootingUsers.length, 1)) ?? 0;
+
+      newActorData['data.currency'].gp.value = gold;
+    }
+
+    await token.actor.update(newActorData);
+    //console.log('Flags after: '); console.log(token.actor.data.flags);
+    //console.log('Currency after:', token.actor.data.data.currency);
+
+    /////
+    // Update permissions so users can loot stuff by themselves.
+
+
 
     if (lootingUsers.length > 0) {
       // Permissions level 2 lets users loot, but not edit willy-nilly.
