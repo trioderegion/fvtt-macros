@@ -45,7 +45,7 @@ let rage = async function() {
         }]
       }
     await actorD.createEmbeddedEntity("ActiveEffect", effectData);
-    let the_message = `<em>${actor.name} starts to Rage!</em>`;
+    let the_message = `<em>${actorD.name} starts to Rage!</em>`;
     ChatMessage.create({
       user: game.user._id,
       speaker: ChatMessage.getSpeaker({token: actorD}),
