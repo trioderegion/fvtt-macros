@@ -1,6 +1,6 @@
 /** Will act funny if multiple tokens of the same PC are on the board */
 async function MistyStep(){
-    token = item.actor.getActiveTokens()[0];
+    let token = item.actor.getActiveTokens()[0];
     
     await item.actor.useSpell(item);
     
@@ -41,7 +41,9 @@ async function MistyStep(){
         
         Hooks.once("createMeasuredTemplate", deleteTemplatesAndMove )
         
-        new game.dnd5e.canvas.AbilityTemplate(templateData).drawPreview()
+        let template = new game.dnd5e.canvas.AbilityTemplate(templateData)
+        template.actorSheet = token.actor.sheet;
+        template.drawPreview()
     });
 }
 
