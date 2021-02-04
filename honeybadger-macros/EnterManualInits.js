@@ -21,8 +21,7 @@ async function promptInit(){
           }
         }
       }).render(true);
-    });
-  }
+    };
 
   game.combat.updateCombatant(updates);
 }
