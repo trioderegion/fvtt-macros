@@ -1,23 +1,39 @@
 /** intended for use with Item Macro. 'item' here is the spell being cast if using outside Item Macro */
-/** spawns an actor with the same name as the spell at the location of the template
-  * NOTE: It is recommended to use a small (< 1 grid space) circular AOE in the item itself, regardless of if
-          the spell has an aoe component. The template is hijacked for spawn placement */
-function swapToActor(scene, template) {
-     
-     let protoToken = game.actors.getName(item.name).data.token;
-
-     protoToken.x = template.x;
-     protoToken.y = template.y;
-     
-     
-     protoToken.x -= scene.data.grid/2;
-     protoToken.y -= scene.data.grid/2;
-     
-     canvas.tokens.createMany(protoToken,{});
-     
-     return false;
- }
- 
-Hooks.once("preCreateMeasuredTemplate", swapToActor)
- 
-item.options.actor.useSpell(item);
+/** spawns an actor with the same name as the spell at the location of the template */
+(async ()=>{
+    function spawnActor(scene, template) {
+         
+         let protoToken = game.actors.getName(item.name).data.token;
+    
+         protoToken.x = template.x;
+         protoToken.y = template.y;
+         
+         // Increase this offset for larger summons
+         protoToken.x -= (scene.data.grid/2+(protoToken.width-1)*scene.data.grid);
+         protoToken.y -= (scene.data.grid/2+(protoToken.height-1)*scene.data.grid);
+         
+         return canvas.tokens.createMany(protoToken,{});
+     }
+    
+    async function deleteTemplatesAndSpawn (scene, template) {
+        
+        await spawnActor(scene,template);
+        await canvas.templates.deleteMany([template._id]);
+    }
+        
+    Hooks.once("createMeasuredTemplate", deleteTemplatesAndSpawn);
+    await item.roll();
+    
+    let template = new game.dnd5e.canvas.AbilityTemplate({
+                t: "circle",
+                user: game.user._id,
+                distance: 3.5,
+                direction: 0,
+                x: 0,
+                y: 0,
+                fillColor: game.user.color
+            });
+            
+    template.actorSheet = token.actor.sheet;
+    template.drawPreview();
+})();
