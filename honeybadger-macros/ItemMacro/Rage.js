@@ -42,7 +42,8 @@ let rage = async function() {
         "value": "piercing",
         "mode": 0,
         "priority": 0
-        }]
+        }],
+      duration : {rounds: 10}
       }
     await actorD.createEmbeddedEntity("ActiveEffect", effectData);
     let the_message = `<em>${actorD.name} starts to Rage!</em>`;
