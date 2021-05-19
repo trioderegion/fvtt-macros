@@ -1,7 +1,6 @@
 /** Animate Objects Summon */
 // USAGE NOTE: Replace list of "gActorName" assignments with your actor names
 
-// Pretty much all credit to Kekilla for...most of the template code used here.
 
 /*
   quickDialog
@@ -78,23 +77,22 @@ function getCenterGrid(point = {})
   Capture Click
  */
 let gNumSpawned = 0;
-let gNeedSpawn = 0;
+let gNeedSpawn = 100;
 let gCurrentActor;
 async function handleClick(event){
-    if(gNumSpawned < gNeedSpawn){
+    if(gNumSpawned < gNeedSpawn && !!gCurrentActor){
         await spawnActor(gCurrentActor);
         gNumSpawned++
     }
-    
-    if(gNumSpawned >= gNeedSpawn){
-        $(document.body).off("click");
-    }
-        
 }
 
 function captureClick()
 {
   $(document.body).on("click", handleClick);
+}
+
+function stopCapture() {
+   $(document.body).off("click", handleClick); 
 }
 
 const wait = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
@@ -137,40 +135,39 @@ async function spawnActor(actorName) {
 
     await wait(500);
     
+    captureClick();
+     
     gCurrentActor = "Tiny Object";
     gNumSpawned = 0;
     gNeedSpawn = parseInt(tinyNum);
-    captureClick();
     
     await sleepWhilePlacing();
     
     gCurrentActor = "Small Object";
     gNumSpawned = 0;
     gNeedSpawn = parseInt(smallNum);
-    captureClick();
-    
+
     await sleepWhilePlacing();
     
     gCurrentActor = "Medium Object";
     gNumSpawned = 0;
     gNeedSpawn = parseInt(mediumNum);
-    captureClick();
-    
+
     await sleepWhilePlacing();
     
     gCurrentActor = "Large Object";
     gNumSpawned = 0;
     gNeedSpawn = parseInt(largeNum);
-    captureClick();
-    
+
     await sleepWhilePlacing();
     
     gCurrentActor = "Huge Object";
     gNumSpawned = 0;
     gNeedSpawn = parseInt(hugeNum);
-    captureClick();
-    
+
     await sleepWhilePlacing();
+    
+    stopCapture();
     
     ui.notifications.info("Done!");
     
