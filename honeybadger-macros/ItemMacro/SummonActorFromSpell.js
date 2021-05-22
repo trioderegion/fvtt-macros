@@ -3,7 +3,7 @@
 (async ()=>{
     function spawnActor(scene, template) {
          
-         let protoToken = game.actors.getName(item.name).data.token;
+         let protoToken = duplicate(game.actors.getName(item.name).data.token);
     
          protoToken.x = template.x;
          protoToken.y = template.y;
