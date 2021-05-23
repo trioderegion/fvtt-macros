@@ -6,7 +6,7 @@
 
 // This will auto adjust damage bonus on Rage.
 let rage = async function() {
-  let actorD = item.options.actor;
+  let actorD = item.actor;
   let level = actorD.items.find(i=> i.name === "Barbarian").data.data.levels;
   if (actorD.effects.entries.find(ef=> ef.data.label === "Rage")) {
     let rage_id = await actorD.effects.entries.find(ef=> ef.data.label === "Rage").id;
