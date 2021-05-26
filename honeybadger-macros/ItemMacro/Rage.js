@@ -11,7 +11,7 @@ let rage = async function() {
   if (actorD.effects.entries.find(ef=> ef.data.label === "Rage")) {
     let rage_id = await actorD.effects.entries.find(ef=> ef.data.label === "Rage").id;
     await actorD.deleteEmbeddedEntity("ActiveEffect", rage_id);
-    let the_message = `<em>${actorD.name}'s rage wares off.</em>`;
+    let the_message = `<em>${actorD.name}'s rage wears off.</em>`;
     ChatMessage.create({
       user: game.user._id,
       speaker: ChatMessage.getSpeaker({token: actorD}),
