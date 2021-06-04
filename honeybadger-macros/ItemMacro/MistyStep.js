@@ -2,7 +2,7 @@
 async function MistyStep(){
     let token = item.actor.getActiveTokens()[0];
     
-    await item.actor.useSpell(item);
+    await item.roll();
     
     let range = MeasuredTemplate.create({
         t: "circle",
