@@ -106,7 +106,7 @@ async function TurnSelectedToLoot(addCurrency = false){
     let lootingUsers= game.users.filter(user => {return user.role >= 1 && user.role <= 2 && !user_blocklist.includes(user.name) && user.active});
 
     //console.log('Looting users:', lootingUsers);
-debugger
+
     /** find if the actor has any gold already on its person */
     let currencyArray = [];
     for (const currency in newActorData){
