@@ -1,7 +1,6 @@
 /** 
  * Turns an npc into a loot sheet while removing anything that doesn't
  * look like an "item".
- * Requires: Loot Sheet NPC 5e
  */
 
 let d = new Dialog({
@@ -15,14 +14,14 @@ let d = new Dialog({
     convert: {
       icon: '<i class="fas fa-thumbs-up"></i>',
       label: 'Convert',
-      callback: () => {
+      callback: (html) => {
         TurnSelectedToLoot(false);
       }
     },
     convertAdd: {
       icon: '<i class="fas fa-coins"></i>',
       label: 'Add Gold',
-      callback: () => {
+      callback: (html) => {
         TurnSelectedToLoot(true);
       }
     }
@@ -50,12 +49,12 @@ async function TurnSelectedToLoot(addCurrency = false){
       .filter(item => {
         // Weapons are fine, unless they're natural.
         if (item.type == 'weapon') {
-          return item.data.weaponType == 'natural';
+          return item.data.data.weaponType == 'natural';
         }
 
         // Equipment's fine, unless it's natural armor.
         if (item.type == 'equipment') {
-          return item.data.armor.type == 'natural';
+          return item.data.data.armor.type == 'natural';
         }
 
         // Item type blocklist.
