@@ -122,7 +122,7 @@ async function TurnSelectedToLoot(addCurrency = false){
       /** ensure it can devide evenly across all looting players (convienence) */
       gold = gold + (lootingUsers.length) - (gold % Math.max(lootingUsers.length, 1)) ?? 0;
 
-      newActorData['data.currency'].gp.value = gold;
+      newActorData['data.currency.gp.value'] = gold;
     }
 
     await token.document.actor.update(newActorData);
