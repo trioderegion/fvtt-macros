@@ -4,7 +4,7 @@
 
 /* CONFIG */
 const summonItem = item; //'item' defined by Item Macro
-const ActorNameToSpawn = item.name;
+const actorNameToSpawn = item.name;
 /* \CONFIG */
 
 function drawTemplatePreview(type, distance){
@@ -49,6 +49,6 @@ function deleteTemplatesAndSpawn(actorName){
     }
 }
     
-Hooks.once("createMeasuredTemplate", deleteTemplatesAndSpawn(ActorNameToSpawn));
+Hooks.once("createMeasuredTemplate", deleteTemplatesAndSpawn(actorNameToSpawn));
 await summonItem.roll();
 drawTemplatePreview('circle', 3.5);
