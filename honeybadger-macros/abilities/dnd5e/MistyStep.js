@@ -51,7 +51,7 @@ async function deleteTemplatesAndMove (template) {
                 y : template.data.y - canvas.grid.size/2}
     })
 
-    await template.parent.updateEmbeddedDocuments("Token", updates);
+    await template.parent.updateEmbeddedDocuments("Token", updates, {animate: false});
     await template.parent.deleteEmbeddedDocuments("MeasuredTemplate", [template.id, rangeId])
 }
 
