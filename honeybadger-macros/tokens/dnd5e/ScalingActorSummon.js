@@ -28,7 +28,6 @@ SOFTWARE.
  * The const values in the CONFIG section are arbitrary values and
  *   all may not be used depending on the scaling needed.
  * 
- * 
  ************************************************************************/
 
 /* CONFIG */
@@ -36,26 +35,22 @@ const summonItem = item; //'item' defined by Item Macro
 const actorNameToSpawn = summonItem.name;
 const summonerActor = summonItem.actor;
 const summonerDc = summonerActor.data.data.attributes.spelldc;
-const summonerSpellAttackMod = summonerDc - 8;
+const summonerSpellAttackMod = summonerDc - 8; //assumes no bonus to spellDC or spell attack bonus
 
 /** needs to return a plain update object for this specific summoned actor 
     Note: this can be an empty object to skip updating the actor */
 function actorUpdateGenerator(castingLevel, summonerActor, summonedToken){
     return {
-        "name" : `${summonerActor.name}'s ${actorNameToSpawn}`,
-        "data.attributes.ac.value": castingLevel
+      //actor update data
     };
 }
 
 /** needs to return an array of item updates (including '_id' field) 
-    Note: this can be an empty array to skipp updating the actor's items */
+    Note: this can be an empty array to skip updating the actor's items */
 function itemUpdateGenerator(castingLevel, summonerActor, summonedToken){
-    const scalingItem = summonedToken.actor.items.getName("Flame Burst");
-    return [{
-        "_id" : scalingItem.id,
-        "data.damage.parts": [[`${castingLevel}d6`,"fire"]],
-        "data.save": {ability:"dex", dc:summonerDc, scaling:"flat"}        
-    }]
+    let itemUpdates = [];
+    //populate array of item updates 
+    return itemUpdates;
 }
 /* \CONFIG */
 
@@ -72,7 +67,7 @@ async function rollItemGetLevel(item){
     if(!result) return 0;
     const content = result.data.content;
     const level = content.charAt(content.indexOf("data-spell-level")+18);
-    return level;
+    return parseInt(level);
 }
 
 function drawTemplatePreview(type, distance){
