@@ -19,7 +19,8 @@ SOFTWARE.
 ****************************************************************************/
 
 /*********************** USAGE ********************************************
- * Initial setup is intended for use with item macro as it defines 'item'.
+ * Initial setup is intended for use with item macro. Midi support enabled
+ *   by adjusting the 'module' config to MODULE.MIDI
  * 
  * When used via other means, pay attention to 'rollItemGetLevel' as it
  *   may need to replaced or modified to grab the item level if its not
@@ -30,12 +31,26 @@ SOFTWARE.
  * 
  ************************************************************************/
 
+const MODULE = {
+    ITEM_MACRO : "item-macro",
+    MIDI : "midi"
+}
+
 /* CONFIG */
-const summonItem = item; //'item' defined by Item Macro
+const module = MODULE.ITEM_MACRO
+const summonItem = module == MODULE.ITEM_MACRO ? item : args[0].item;
 const actorNameToSpawn = summonItem.name;
-const summonerActor = summonItem.actor;
+const summonerActor = module == MODULE.ITEM_MACRO ? summonItem.actor : args[0].actor;
 const summonerDc = summonerActor.data.data.attributes.spelldc;
 const summonerSpellAttackMod = summonerDc - 8; //assumes no bonus to spellDC or spell attack bonus
+
+/** needs to return a plain update object for this specific summoned token 
+    Note: this can be an empty object to skip updating the token */
+function tokenUpdateGenerator(castingLevel, summonerActor, summonedToken){
+    return {
+      //token update data
+    }
+}
 
 /** needs to return a plain update object for this specific summoned actor 
     Note: this can be an empty object to skip updating the actor */
@@ -55,8 +70,22 @@ function itemUpdateGenerator(castingLevel, summonerActor, summonedToken){
 /* \CONFIG */
 
 /* CORE LOGIC */
-const castingLevel = await rollItemGetLevel(summonItem);
+
+/** Get the level of the spell, depending on module used */
+let castingLevel = 0;
+switch (module) {
+    case MODULE.ITEM_MACRO:
+        castingLevel = await rollItemGetLevel(item);
+        break;
+    case MIDI:
+        castingLevel = args[0].spellLevel;
+}
+const 
+
+/** Insert our primary logic hook */
 Hooks.once("createMeasuredTemplate", deleteTemplatesAndSpawn(actorNameToSpawn, summonerActor, castingLevel));
+
+/** Initiate the process with a "targeting" template */
 drawTemplatePreview('circle', 3.5);
 /* \CORE LOGIC */
 
@@ -103,9 +132,15 @@ function spawnActorAtTemplate(actorName, template) {
      return canvas.scene.createEmbeddedDocuments("Token", [protoToken])
 }
 
-async function scaleSummon(summonedDocument, summonerActor, castingLevel){
+async function updateSummon(summonedDocument, summonerActor, castingLevel){
+
+    /** gather the user defined updates */
     const itemsUpdate = itemUpdateGenerator(castingLevel, summonerActor, summonedDocument);
     const summonUpdate = actorUpdateGenerator(castingLevel, summonerActor, summonedDocument);
+    const tokenUpdate = tokenUpdateGenerator(castingLevel, summonerActor, summonedDocument);
+
+    /** perform the updates */
+    await summonedDocument.update(tokenUpdate);
     await summonedDocument.actor.update(summonUpdate);
     return summonedDocument.actor.updateEmbeddedDocuments("Item", itemsUpdate);
 }
@@ -116,7 +151,7 @@ function deleteTemplatesAndSpawn(actorName, summonerActor, castingLevel){
     return async (templateDocument) => {
         const summonedDoc = (await spawnActorAtTemplate(actorName, templateDocument))[0];
         await templateDocument.delete();
-        await scaleSummon(summonedDoc, summonerActor, castingLevel);
+        await updateSummon(summonedDoc, summonerActor, castingLevel);
     }
 }
 /* \SUPPORTING FUNCTIONS */

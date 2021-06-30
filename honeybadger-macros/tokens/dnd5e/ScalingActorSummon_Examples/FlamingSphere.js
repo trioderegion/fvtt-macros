@@ -1,10 +1,18 @@
 /* CONFIG */
+const module = MODULE.ITEM_MACRO
 const summonItem = item; //'item' defined by Item Macro
 const actorNameToSpawn = summonItem.name;
 const summonerActor = summonItem.actor;
 const summonerDc = summonerActor.data.data.attributes.spelldc;
 const summonerSpellAttackMod = summonerDc - 8;
 
+/** needs to return a plain update object for this specific summoned token 
+    Note: this can be an empty object to skip updating the token */
+function tokenUpdateGenerator(castingLevel, summonerActor, summonedToken){
+    return {
+      //token update data
+    }
+}
 /** needs to return a plain update object for this specific summoned actor */
 function actorUpdateGenerator(castingLevel, summonerActor, summonedToken){
     return {
