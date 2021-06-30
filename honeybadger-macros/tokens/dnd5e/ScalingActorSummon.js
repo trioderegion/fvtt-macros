@@ -80,13 +80,13 @@ switch (module) {
     case MIDI:
         castingLevel = args[0].spellLevel;
 }
-const 
 
 /** Insert our primary logic hook */
 Hooks.once("createMeasuredTemplate", deleteTemplatesAndSpawn(actorNameToSpawn, summonerActor, castingLevel));
 
 /** Initiate the process with a "targeting" template */
 drawTemplatePreview('circle', 3.5);
+
 /* \CORE LOGIC */
 
 /* SUPPORTING FUNCTIONS */
