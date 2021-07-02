@@ -20,7 +20,10 @@ SOFTWARE.
 
 /* Spawns a token from the actor with the same name as
  * the item at the location of the template.
- * Note: Intended for use with Item Macro. */
+ * Note: Intended for use with Item Macro.
+ *       Comment out 'item.roll()' near the
+ *       bottom for general use.
+ */
 
 /* CONFIG */
 const summonItem = item; //'item' defined by Item Macro
