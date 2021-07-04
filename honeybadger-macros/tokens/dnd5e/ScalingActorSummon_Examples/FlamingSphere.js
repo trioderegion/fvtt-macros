@@ -2,7 +2,7 @@
 const module = MODULE.ITEM_MACRO
 const summonItem = item; //'item' defined by Item Macro
 const actorNameToSpawn = summonItem.name;
-const summonerActor = summonItem.actor;
+const summonerActor = summonItem.parent;
 const summonerDc = summonerActor.data.data.attributes.spelldc;
 const summonerSpellAttackMod = summonerDc - 8;
 

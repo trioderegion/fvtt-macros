@@ -38,9 +38,9 @@ const MODULE = {
 
 /* CONFIG */
 const module = MODULE.ITEM_MACRO
-const summonItem = module == MODULE.ITEM_MACRO ? item : args[0].item;
+const summonItem = item //Both item-macro and midi-qol forward the 'item' symbol
 const actorNameToSpawn = summonItem.name;
-const summonerActor = module == MODULE.ITEM_MACRO ? summonItem.actor : args[0].actor;
+const summonerActor = item.parent;
 const summonerDc = summonerActor.data.data.attributes.spelldc;
 const summonerSpellAttackMod = summonerDc - 8; //assumes no bonus to spellDC or spell attack bonus
 
@@ -77,7 +77,7 @@ switch (module) {
     case MODULE.ITEM_MACRO:
         castingLevel = await rollItemGetLevel(item);
         break;
-    case MIDI:
+    case MODULE.MIDI:
         castingLevel = args[0].spellLevel;
 }
 
