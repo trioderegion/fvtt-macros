@@ -1,3 +1,9 @@
+/*
+ * Based heavily on the original work done by ygg (aka tas).
+ * Thanks a lot, your work has grown legs and helped out 
+ * many a foundry user <3
+ */
+
 /**************************************************************************
 MIT License
 Copyright (c) 2021 Matthew Haentschke
