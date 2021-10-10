@@ -1,5 +1,5 @@
 /*
- * Based heavily on the original work done by ygg (aka tas).
+ * Based heavily on the original work done by ygg#0922 (aka tas).
  * Thanks a lot, your work has grown legs and helped out 
  * many a foundry user <3
  */
