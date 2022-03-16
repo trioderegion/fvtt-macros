@@ -1,4 +1,6 @@
 /* Requires Warp Gate and Item Macro */
+/* MIT (c) 2022 Matthew Haentschke */
+
 // Misty Step Item Macro
 token.actor.sheet.minimize();
 const tokenCenter = token.center;
