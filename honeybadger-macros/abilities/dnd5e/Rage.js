@@ -34,7 +34,7 @@ let rage = async function() {
     await existingEffect.delete();
     let the_message = `<em>${actorD.name}'s rage wears off.</em>`;
     ChatMessage.create({
-      user: game.user._id,
+      user: game.user.id,
       speaker: ChatMessage.getSpeaker({token: actorD}),
       content: the_message,
       type: CONST.CHAT_MESSAGE_TYPES.EMOTE
@@ -70,7 +70,7 @@ let rage = async function() {
     await actorD.createEmbeddedDocuments("ActiveEffect", [effectData]);
     let the_message = `<em>${actorD.name} enters a rage!</em>`;
     ChatMessage.create({
-      user: game.user._id,
+      user: game.user.id,
       speaker: ChatMessage.getSpeaker({token: actorD}),
       content: the_message,
       type: CONST.CHAT_MESSAGE_TYPES.EMOTE
