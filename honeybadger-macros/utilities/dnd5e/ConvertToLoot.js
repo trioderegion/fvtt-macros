@@ -18,11 +18,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ****************************************************************************/
 
-/** 
- * Turns an npc into an Item Pile and optionally adds gold according to CR.
- * Has 3 states: Uninspected, Inspected and Not Empty, Inspected and Empty.
- * Requires: Warpgate, Item Piles, and optionally JB2A Patreon (for item pile images)
- */
+/*
+Requires: Warp Gate, Item Piles
+Optional: JB2A Patreon Pack for container images
+
+System: DnD5e (for currency modification). Agnostic otherwise.
+
+Setup: It is recommended to add the following filter to Item Pile's default 
+filter: data.weaponType | natural. Which will filter out the natural weapons
+found on many creatures.
+
+Completely non-destructive and warpgate-revertable conversion of the selected 
+tokens to a lootable body with the option of adding treasure (gold, silver,
+copper) roughly in-line with the Individual Treasure by CR tables. 
+*/
+
 const buttons = [
   {
     label: '<i class="fas fa-thumbs-up"></i>Convert',
