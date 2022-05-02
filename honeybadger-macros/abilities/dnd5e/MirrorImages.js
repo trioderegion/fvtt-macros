@@ -1,4 +1,4 @@
-//TODO Comment
+//Requires: Warp Gate, Sequencer, and optionally JB2A (for effect asset)
 //MIT (c) 2022 Matthew Haentshcke
 
 const casterToken = token;
