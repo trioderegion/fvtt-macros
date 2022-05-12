@@ -1,5 +1,5 @@
 /* DnD5e Light Cantrip
- * Requires: Warpgate
+ * Requires: Warpgate and a plain actor named "Default" in the world
  * Intended for execution via Item Macro directly
  */
 
