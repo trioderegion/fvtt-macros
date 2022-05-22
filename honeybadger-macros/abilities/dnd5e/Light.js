@@ -38,5 +38,5 @@ if (tokens.length == 0) {
     const target = tokens[0];
     lightData.bright = Math.max(lightData.bright, target.data.light.bright);
     lightData.dim = Math.max(lightData.dim, target.data.light.dim);
-    await warpgate.mutate(target, {token: {light: lightData}}, {}, {name: "Light Spell", description: `Upgrading to ${lightData.dim} dim and ${lightData.bright} bright light by ${token.name}. Revert to remove.`})
+    await warpgate.mutate(target, {token: {light: lightData}}, {}, {name: "Light Spell", description: `Upgrading to ${lightData.dim} dim and ${lightData.bright} bright light by ${token?.name ?? "someone"}. Revert to remove.`})
 }
