@@ -9,7 +9,7 @@ const tokens = warpgate.crosshairs.collect(position);
 
 let lightData = {
     "dim": 40,
-    "bright": 20
+    "bright": 20,
     "angle": 0,
     "color": "#330547",
     "alpha": 0.1,
