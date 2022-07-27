@@ -1,0 +1,170 @@
+{
+  "name": "Treblemaker",
+  "type": "equipment",
+  "img": "icons/tools/instruments/lute-gold-brown.webp",
+  "data": {
+    "description": {
+      "value": "<p><em>Wondrous item, rare, any stringed instrument, spellcasting focus (bard), requires attunement</em></p>\n<blockquote>\n<p><em>This impractically heavy stringed instrument made of solid metal was previously the prized possession of Carcass Treblemaker. Scores of vicious goblinoid raiders would be driven into frenzied combat by the intense flames and powerful rythm that eminated from this instrument of war.</em></p>\n</blockquote>\n<p>A creature that attempts to play the instrument without being attuned to it must succeed on a DC 15 Wisdom saving throw or take [[/r 2d4]] psychic damage.</p>\n<p>You can play the instrument while casting a spell that causes any of its targets to be frightened on a failed saving throw, thereby imposing <strong>disadvantage </strong>on the save. This effect applies only if the spell has a somatic or a material component.</p>\n<p>As an action, you play a power chord on the Trebelmaker, which causes a stream of fire to erupt from its end adding frenzy to the battlefield. A number of allied creatures that can see or hear you within 30 feet, up to your proficiency bonus, gain a [[/r 1d6]] frenzy die which expire at the end of your next turn.</p>\n<p>While a creature has a frezy die any ability check, attack roll, or saving throw made gains a bonus of a roll of the frenzy die. The die is then expended.</p>\n<p>Until the end of your next turn, any time you take damage, you must make a Constitution saving throw with DC equal to 10 or half of the total damage taken, whichever is higher. On a failed save you are unable to maintain your rythm and all frenzy dice are removed from your allies.</p>",
+      "chat": "",
+      "unidentified": ""
+    },
+    "source": "Badger Brews",
+    "quantity": 1,
+    "weight": 25,
+    "price": 8000,
+    "attunement": 1,
+    "equipped": false,
+    "rarity": "rare",
+    "identified": true,
+    "activation": {
+      "type": "action",
+      "cost": 1,
+      "condition": ""
+    },
+    "duration": {
+      "value": 1,
+      "units": "round"
+    },
+    "target": {
+      "value": null,
+      "width": null,
+      "units": "",
+      "type": "ally"
+    },
+    "range": {
+      "value": 30,
+      "long": null,
+      "units": "ft"
+    },
+    "uses": {
+      "value": null,
+      "max": "",
+      "per": ""
+    },
+    "consume": {
+      "type": "",
+      "target": "",
+      "amount": null
+    },
+    "ability": null,
+    "actionType": "",
+    "attackBonus": 0,
+    "chatFlavor": "",
+    "critical": {
+      "threshold": null,
+      "damage": ""
+    },
+    "damage": {
+      "parts": [],
+      "versatile": ""
+    },
+    "formula": "",
+    "save": {
+      "ability": "",
+      "dc": null,
+      "scaling": "spell"
+    },
+    "armor": {
+      "value": null,
+      "type": "trinket",
+      "dex": null
+    },
+    "hp": {
+      "value": 0,
+      "max": 0,
+      "dt": null,
+      "conditions": ""
+    },
+    "baseItem": "",
+    "speed": {
+      "value": null,
+      "conditions": ""
+    },
+    "strength": 0,
+    "stealth": false,
+    "proficient": true
+  },
+  "effects": [
+    {
+      "_id": "HZRA9HKiwuZAkVXD",
+      "changes": [
+        {
+          "key": "data.bonuses.abilities.save",
+          "mode": 2,
+          "value": "+1d6"
+        },
+        {
+          "key": "data.bonuses.mwak.attack",
+          "mode": 2,
+          "value": "+1d6"
+        },
+        {
+          "key": "data.bonuses.msak.attack",
+          "mode": 2,
+          "value": "+1d6"
+        },
+        {
+          "key": "data.bonuses.rwak.attack",
+          "mode": 2,
+          "value": "+1d6"
+        },
+        {
+          "key": "data.bonuses.rsak.attack",
+          "mode": 2,
+          "value": "+1d6"
+        },
+        {
+          "key": "data.abilities.dex.bonuses.check",
+          "mode": 2,
+          "value": "+1d6"
+        },
+        {
+          "key": "data.abilities.str.bonuses.check",
+          "mode": 2,
+          "value": "+1d6"
+        },
+        {
+          "key": "data.abilities.con.bonuses.check",
+          "mode": 2,
+          "value": "+1d6"
+        },
+        {
+          "key": "data.abilities.wis.bonuses.check",
+          "mode": 2,
+          "value": "+1d6"
+        },
+        {
+          "key": "data.abilities.cha.bonuses.check",
+          "mode": 2,
+          "value": "+1d6"
+        },
+        {
+          "key": "data.abilities.int.bonuses.check",
+          "mode": 2,
+          "value": "+1d6"
+        }
+      ],
+      "disabled": false,
+      "duration": {
+        "rounds": 1,
+        "startTime": null
+      },
+      "icon": "icons/magic/fire/flame-burning-fist-strike.webp",
+      "label": "Frenzy",
+      "origin": "",
+      "transfer": false,
+      "flags": {
+        "effective-transferral": {
+          "transferBlock": {
+            "button": false,
+            "chat": false
+          }
+        },
+        "dnd5e-helpers": {
+          "rest-effect": "Short Rest"
+        }
+      },
+      "tint": null
+    }
+  ]
+}
