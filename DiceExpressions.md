@@ -18,4 +18,4 @@
 ## Classes - Cleric
 
 ### Cleric channel divinity progression 
-`floor( 3 * log(@classes.cleric.levels) + 0.5 )`
+`floor( 2 * log(@classes.cleric.levels) + 0.5 )`
