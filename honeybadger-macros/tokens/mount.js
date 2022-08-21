@@ -70,7 +70,11 @@ if( companionToken.id in leaders ) {
     /* we want to start following */
 
     /* move ranger token to center of companion, with an offset */
-    const {x,y} = companionToken.center;
+    let {x,y} = companionToken.center;
+    
+    /* nudge a bit in case things line up exactly and you cannot select the mounter */
+    x+=10;
+    y+=10;
 
     await rangerToken.document.update({x, y}, {animateMovement: false});
 
