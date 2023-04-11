@@ -1,3 +1,10 @@
+/** 
+ * Unmask Item
+ * Requres: warpgate 1.6+
+ * See <https://ko-fi.com/post/Badger-Scripts-Masked-Items-U6U7KAGRY>
+ * for instructions.
+ */
+
 const archons = token?.actor?.items.filter( item => !!item.getFlag('warpgate','archon')) ?? [];
 
 const choice = await warpgate.buttonDialog({
