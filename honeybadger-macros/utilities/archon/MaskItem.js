@@ -1,3 +1,10 @@
+/** 
+ * Mask Item
+ * Requres: warpgate 1.6+
+ * See <https://ko-fi.com/post/Badger-Scripts-Masked-Items-U6U7KAGRY>
+ * for instructions.
+ */
+
 const result = await warpgate.menu({
     inputs: [{type:'text', label: 'Item UUID: ', options: ''}]
 }, {title: 'Mask Item by UUID'})
