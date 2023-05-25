@@ -24,7 +24,7 @@ Requires: Warp Gate, Item Piles
 System: DnD5e (for currency modification). Agnostic otherwise.
 
 Setup: It is recommended to add the following filter to Item Pile's default 
-filter: data.weaponType | natural. Which will filter out the natural weapons
+filter: system.weaponType | natural. Which will filter out the natural weapons
 found on many creatures. Alternatively, define the `shouldBeLoot` filter function
 
 DESTRUCTIVE MODIFICATION of the selected tokens to a SINGLE lootable body with
