@@ -3,7 +3,7 @@
  *   up to the size of the largest token). Fill desired pack keys (`displayPacks`)
  *   from which to spawn tokens on the current scene according to descending height.
  *
- *   Be patient, and pray you your gods that the server survives.
+ *   Be patient, and pray to your gods that the server survives.
  */
 const displayPacks = ['pf2e.pathfinder-bestiary']
 
