@@ -146,11 +146,13 @@ const createdTokens = await canvas.scene.createEmbeddedDocuments('Token', Array.
 
 ui.notifications.info(`Created ${createdTokens.length} Tokens.`);
 
-await Dialog.confirm({
+const doCleanUp = await Dialog.confirm({
   title: 'Please check everything',
-  content: `<p>once you are finished with the inspection, close this window to restore the scene and clean up the test actor</p>`,
+  content: `<p>Click "No" to keep the tokens on the scene, click "Yes" to delete the fake actor and the tokens.</p>`,
 });
 
-/* get out the hammer reloaded */
-await canvas.scene.deleteEmbeddedDocuments('Token', [], { deleteAll: true });
-await Actor.deleteDocuments([templateActor.id]);
+if (doCleanUp) {
+  /* get out the hammer reloaded */
+  await canvas.scene.deleteEmbeddedDocuments('Token', [], { deleteAll: true });
+  await Actor.deleteDocuments([templateActor.id]);
+}
