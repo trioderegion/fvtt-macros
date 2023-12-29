@@ -27,17 +27,22 @@ ui.notifications.info('Gallery creation in progress. Please wait, this will take
 await canvas.scene.deleteEmbeddedDocuments('Token', [], { deleteAll: true });
 
 /* collect all document identifiers from packs */
-const allActorUuids =
-  (await game.packs
-    .get(selection)
-    ?.getIndex()
-    ?.then((index) => index.map((entry) => entry.uuid))) ||
-  game.folders
-    .find((f) => f.name === selection && f.type === 'Actor')
-    ?.documentCollection?.map((a) => a.uuid) ||
-  selection === 'actors'
-    ? game.actors.map((a) => a.uuid)
-    : [];
+let uuids = game.packs.get(selection)?.index.map((idx) => idx.uuid);
+if (!uuids?.length) {
+  const folder = game.actors.folders.getName(selection);
+  const subfolders = folder?.getSubfolders(true);
+  const documents = folder?.contents.concat(subfolders.flatMap((f) => f.contents));
+  uuids = documents.map((actor) => actor.uuid);
+}
+if (!uuids?.length) {
+  uuids = selection === 'actors' ? game.actors.map((actor) => actor.uuid) : [];
+}
+if (!uuids?.length) {
+  ui.notifications.info(
+    'could not find compendium or folder, and the imput isn\'t exactly "actors" (without quotes)',
+  );
+  return;
+}
 
 let templateActor = game.actors.getName('GalleryActor');
 if (!templateActor) {
@@ -51,7 +56,7 @@ if (!templateActor) {
  * if the size field doesn't exist, don't do anyhting.
  */
 const allTokens = [];
-for (const uuid of allActorUuids) {
+for (const uuid of uuids) {
   const doc = await fromUuid(uuid);
   const token = await doc.getTokenDocument({
     delta: {
