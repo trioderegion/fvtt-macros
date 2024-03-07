@@ -5,37 +5,65 @@
  *
  *   Be patient, and pray to your gods that the server survives.
  */
-const displayPacks = ['pf2e.pathfinder-bestiary']
-
-let templateActor = game.actors.getName('GalleryActor');
-if (!templateActor) {
-  templateActor = await Actor.create({name:'GalleryActor', type:'npc'})
-}
-
-await canvas.scene.deleteEmbeddedDocuments('Token', [], {deleteAll: true});
+let selection;
+await Dialog.wait({
+  title: 'Compendium ID',
+  content: `<label>Enter Compendium ID, the Actors folder name, or "actors":</label>
+    <input type="text" id="selection"></input>`,
+  buttons: {
+    ok: {
+      label: 'Ok',
+      callback: async (html) => {
+        selection = html.find('#selection')[0].value;
+      },
+    },
+  },
+  default: 'ok',
+});
 
 /* get out the hammer */
 ui.notifications.info('Gallery creation in progress. Please wait, this will take a while.');
 
+await canvas.scene.deleteEmbeddedDocuments('Token', [], { deleteAll: true });
+
 /* collect all document identifiers from packs */
-const allActorIds = (await Promise.all(displayPacks.flatMap( key => { 
-  return game.packs.get(key).getIndex().then( index => index.map( entry => ({id: entry._id, pack: key})) );
-}))).flat();
+let uuids = game.packs.get(selection)?.index.map((idx) => idx.uuid);
+if (!uuids?.length) {
+  const folder = game.actors.folders.getName(selection);
+  const subfolders = folder?.getSubfolders(true);
+  const documents = folder?.contents.concat(subfolders.flatMap((f) => f.contents));
+  uuids = documents.map((actor) => actor.uuid);
+}
+if (!uuids?.length) {
+  uuids = selection === 'actors' ? game.actors.map((actor) => actor.uuid) : [];
+}
+if (!uuids?.length) {
+  ui.notifications.info(
+    'could not find compendium or folder, and the imput isn\'t exactly "actors" (without quotes)',
+  );
+  return;
+}
+
+let templateActor = game.actors.getName('GalleryActor');
+if (!templateActor) {
+  templateActor = await Actor.create({ name: 'GalleryActor', type: 'npc' });
+}
 
 /* retrieve each document individually, extract its proto token data,
  * substitute our template actor ID, and populate the token actor's
  * size field so that the pf2e system will automatically size if
  * the token is configured for it.
+ * if the size field doesn't exist, don't do anyhting.
  */
 const allTokens = [];
-for( const id of allActorIds ) {
-  const doc = await game.packs.get(id.pack).getDocument(id.id);
+for (const uuid of uuids) {
+  const doc = await fromUuid(uuid);
   const token = await doc.getTokenDocument({
-    actorData: {
-      'system.traits.size.value': doc.system.traits.size.value
+    delta: {
+      'system.traits.size.value': doc.system?.traits?.size?.value,
     },
     actorId: templateActor.id,
-    actorLink: false
+    actorLink: false,
   });
 
   allTokens.push(token.toObject());
@@ -52,46 +80,51 @@ const sizeVal = {
   med: 1,
   sm: 1,
   tiny: 0.5,
-}
+};
 
-const sizeFromData = (data) => sizeVal[data.actorData.system.traits.size.value];
+const sizeFromData = (data) =>
+  data.delta?.system?.traits?.size?.value
+    ? sizeVal[data.delta?.system?.traits?.size?.value]
+    : data.height;
 
-allTokens.sort( (left, right) => sizeFromData(right) - sizeFromData(left) );
+allTokens.sort((left, right) => sizeFromData(right) - sizeFromData(left));
 
-console.log('Sorted: ',allTokens);
+console.log('Sorted: ', allTokens);
 
 /* Generator function for token position placement.
  * On each iteration, will return the final token data
  * that should be used for creation
  */
 function* nextToken(initialPos, sceneDimensions, tokenList) {
-  let current = {x: 0, y:0, tokenIndex: 0, size: sizeFromData(tokenList[0])};
+  const current = { x: 0, y: 0, tokenIndex: 0, size: sizeFromData(tokenList[0]) };
 
-  while(current.tokenIndex < tokenList.length) {
-
+  while (current.tokenIndex < tokenList.length) {
     /* keep going left to right until our origin runs over the scene boundary */
-    while( (current.x < sceneDimensions.sceneWidth) && 
-            current.size == sizeFromData(tokenList[current.tokenIndex]) ) {
-      
-      //stamp left to right
+    while (
+      current.x < sceneDimensions.sceneWidth &&
+      current.size == sizeFromData(tokenList[current.tokenIndex])
+    ) {
+      // stamp left to right
       const token = tokenList[current.tokenIndex];
-      foundry.utils.mergeObject(token, {x: current.x + initialPos.x, y: current.y + initialPos.y});
+      foundry.utils.mergeObject(token, {
+        x: current.x + initialPos.x,
+        y: current.y + initialPos.y,
+      });
 
-      //prep next iteration
-      current.x += (sizeFromData(token) * sceneDimensions.size);
+      // prep next iteration
+      current.x += sizeFromData(token) * sceneDimensions.size;
       current.size = sizeFromData(token);
       current.tokenIndex++;
 
       yield token;
 
-      if(current.tokenIndex >= tokenList.length) return;
-
+      if (current.tokenIndex >= tokenList.length) return;
     }
     /* We have run over our horizontal boundary, reset and move a row down
      * based on current token size.
      */
     current.x = 0;
-    current.y += (current.size * sceneDimensions.size);
+    current.y += current.size * sceneDimensions.size;
     current.size = sizeFromData(tokenList[current.tokenIndex]);
   }
 
@@ -103,35 +136,23 @@ const sceneDimensions = canvas.scene.dimensions;
 /* seed the token data generator with initial position and other scene data
  * plus all of our gathered token creation data
  */
-const stamper = nextToken({x: sceneDimensions.sceneX, y: sceneDimensions.sceneY}, sceneDimensions, allTokens)
+const stamper = nextToken(
+  { x: sceneDimensions.sceneX, y: sceneDimensions.sceneY },
+  sceneDimensions,
+  allTokens,
+);
 
 const createdTokens = await canvas.scene.createEmbeddedDocuments('Token', Array.from(stamper));
 
-/* find our maximum dimensions */
-const dimensions = createdTokens.reduce( (acc, curr) => {
-  acc.width = Math.max(acc.width, curr.bounds.right - canvas.scene.dimensions.sceneX);
-  acc.height = Math.max(acc.height, curr.bounds.bottom - canvas.scene.dimensions.sceneY);
-  return acc;
-}, {width:0, height:0});
+ui.notifications.info(`Created ${createdTokens.length} Tokens.`);
 
-ui.notifications.info(`Created ${createdTokens.length}. Updating scene to ${dimensions.width}x${dimensions.height}.`);
+const doCleanUp = await Dialog.confirm({
+  title: 'Please check everything',
+  content: `<p>Click "No" to keep the tokens on the scene, click "Yes" to delete the fake actor and the tokens.</p>`,
+});
 
-/* cache data in case of invalidation */
-const originalTop = canvas.scene.dimensions.sceneY;
-const originalLeft = canvas.scene.dimensions.sceneX;
-
-const createdIds = createdTokens.map( token => token.id );
-
-/* abuse local updates to have foundry recalculate the usable canvas start (sceneX/Y) */
-canvas.scene.updateSource(dimensions);
-
-/* compute the needed token offset to fit the new dimensions (padding mainly) */
-const offsetY = canvas.scene.dimensions.sceneY - originalTop;
-const offsetX = canvas.scene.dimensions.sceneX - originalLeft;
-
-console.log('Original: ', originalTop, originalLeft, 'New: ', canvas.scene.dimensions.sceneY, canvas.scene.dimensions.sceneX);
-
-/* shift tokens and force a scene update */
-await canvas.tokens.updateAll( (token) => ({y: token.document.y + offsetY, x: token.document.x + offsetX}), null, {animate:false} );
-
-await canvas.scene.update(dimensions, {diff:false});
+if (doCleanUp) {
+  /* get out the hammer reloaded */
+  await canvas.scene.deleteEmbeddedDocuments('Token', [], { deleteAll: true });
+  await Actor.deleteDocuments([templateActor.id]);
+}
